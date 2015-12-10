@@ -1,1 +1,1 @@
-from .easydate_class import EasyDate
+from easydate.easydate_class import EasyDate
