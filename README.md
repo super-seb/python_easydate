@@ -1,5 +1,5 @@
 # python_easydate
-Datetime utility package for python 2.7 that makes datetime manipulation and time series generation very simple
+Datetime utility package for python 2.7 that makes datetime manipulation and time series generation very simple.
 
 # Purpose and approach
 This package was built to make some date and time manipulations very simple by wrapping key functionality into an easy to use object. In particular it is built: 
