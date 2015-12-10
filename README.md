@@ -3,4 +3,7 @@ Datetime utility package for python 2.7 that makes datetime manipulation and tim
 
 > examples
 
-  ed = easydate()
+    ed = easydate()
+		//Correct
+		var startDate;
+		var endOfFinancialPeriod;
