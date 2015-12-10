@@ -9,7 +9,14 @@ This package was built to make some date and time manipulations very simple by w
 - generate sequences of start/end datetimes for any common frequency specified in plain english
 - easily convert UTC to a local timezone and account for cases that stradle days in calculations
 
+# installation
+pip install easydate
+
 # Example uses
+> import EasyDate object
+	
+	from easydate import EasyDate
+
 > Creating new easydate objects
 
 	# default initialises the reference time right now
