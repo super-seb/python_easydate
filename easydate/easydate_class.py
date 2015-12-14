@@ -22,6 +22,10 @@ class EasyDate():
         self.time_object_utc = self.init_time
         self.time_object_local = self.init_time
         self.set_reference_point(date_time=date_time, local=local, local_timezone=local_timezone)
+        self.range_start = None
+        self.range_end = None
+        self.sequence_range_start = None
+        self.sequence_range_end = None
 
 
     # set up objects
@@ -218,6 +222,13 @@ class EasyDate():
             # get the start/end of the period
             self.get_range(period=period, n_periods=1)
 
+            # save sequence range start and end
+            if n is 0:
+                self.sequence_range_end = self.range_end.strftime('%Y-%m-%d %H:%M:%S')
+
+            if n is (n_periods - 1):
+                self.sequence_range_start = self.range_start.strftime('%Y-%m-%d %H:%M:%S')
+
             # add rows to dataframe
             result.loc[n] = [self.range_start.strftime('%Y-%m-%d %H:%M:%S'), self.range_end.strftime('%Y-%m-%d %H:%M:%S')]
 
@@ -279,3 +290,5 @@ class EasyDate():
             return target - current
         else:
             return (target + 7) - current
+
+
