@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
   name = 'easydate',
   packages = ['easydate'], 
-  version = '0.1',
+  version = '0.11',
   description = 'Very easy datetime manipulation and sequence generation',
   author = 'SebJ',
   author_email = 'sebj.global@gmail.com',
