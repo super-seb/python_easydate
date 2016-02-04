@@ -27,6 +27,10 @@ class EasyDate():
         self.sequence_range_start = None
         self.sequence_range_end = None
 
+    def __str__(self):
+        utc_output = self.time_object_utc.strftime('%Y-%m-%d %H:%M:%S')
+        local_output = self.time_object_local.strftime('%Y-%m-%d %H:%M:%S')
+        return "EasyDate object: {local_time} local time, {utc_time} utc".format(local_time=local_output, utc_time=utc_output)
 
     # set up objects
     def set_reference_point(self,
@@ -88,7 +92,7 @@ class EasyDate():
                   # date_time='current', # date_time to get range for, default to self.time_object_local
                   period='day', # unit to get the range for: minutes, hours, days, weeks, fortnights, months, quarters or years
                   n_periods=1, # the number of units to cover
-                  return_string=False, # return strings or objects
+                  return_string=True, # return strings or objects
                   local=True # for local timezone or utc
                   ):
 
@@ -96,17 +100,22 @@ class EasyDate():
         date_time = self.time_object_local if local is True else self.time_object_utc
 
         # end time of reference point
-        range_end = datetime(date_time.year, date_time.month, date_time.day) \
+        if period == "month":
+            range_end_day = calendar.monthrange(date_time.year, date_time.month)[1]
+        else:
+            range_end_day = date_time.day
+
+        range_end = datetime(date_time.year, date_time.month, range_end_day) \
                 + relativedelta(days=1) \
                 - relativedelta(microseconds=1)
 
         # adjustment to account for months with < 31 days
-        if range_end.month == 2:
-            adjustment = relativedelta(days=3)
-        elif range_end.day == 30:
-            adjustment = relativedelta(days=1)
-        else:
-            adjustment = relativedelta(days=0)
+        # if range_end.month == 2:
+        #     adjustment = relativedelta(days=3)
+        # elif range_end.day == 30:
+        #     adjustment = relativedelta(days=1)
+        # else:
+        #     adjustment = relativedelta(days=0)
 
         # start time of range
         if period == "day":
@@ -116,9 +125,15 @@ class EasyDate():
         elif period == "fortnight":
             range_start = range_end - relativedelta(weeks=(2 * n_periods))
         elif period == "month":
-            range_start = range_end - relativedelta(months=n_periods) + adjustment
+            n_periods -= 1
+            range_start_month = (range_end - relativedelta(months=n_periods)).month
+            range_start_year = (range_end - relativedelta(months=n_periods)).year
+            range_start = datetime(range_start_year, range_start_month, 1)
         elif period == "quarter":
-            range_start = range_end - relativedelta(months=(4 * n_periods)) + adjustment
+            n_periods -= 1
+            range_start_month = (range_end - relativedelta(months=(3*n_periods))).month
+            range_start_year = (range_end - relativedelta(months=(3*n_periods))).year
+            range_start = datetime(range_start_year, range_start_month, 1)
         elif period == "year":
             range_start = range_end - relativedelta(years=n_periods)
         else:
@@ -133,7 +148,7 @@ class EasyDate():
         self.range_end = range_end
 
         # return object or string result
-        if return_string is False:
+        if return_string is True:
             return (range_start.strftime('%Y-%m-%d %H:%M:%S'), range_end.strftime('%Y-%m-%d %H:%M:%S'))
         else:
             return (range_start, range_end)
@@ -290,5 +305,51 @@ class EasyDate():
             return target - current
         else:
             return (target + 7) - current
+
+
+######################################################
+# dev/test
+######################################################
+
+# ed = EasyDate()
+# print ed
+#
+# ed.get_range(period='month')
+#
+# ed.move_reference_to_next(next_time='month')
+# print ed
+#
+# ed.move_reference_point(period='month', n_periods=-1)
+# print ed
+# ed.get_range(period='month')
+#
+# ed.time_object_local - relativedelta(months=2)
+#
+# calendar.monthrange(ed.time_object_local.year, ed.time_object_local.month)[1]
+
+
+# # time range generator for time periods
+# def time_range_generator(time_period='day', n_periods=30):
+#     ed = EasyDate()
+#
+#     # if month or week move to the next week/month end
+#     if time_period == 'week':
+#         ed.move_reference_to_next(next_time='friday')
+#
+#     # generate outputs
+#     n_iter = 0
+#     while n_iter < n_periods:
+#         ed.move_reference_point(period=time_period, n_periods=-1)
+#         yield ed.get_range(period=time_period)
+#         n_iter += 1
+#
+#
+# trg = time_range_generator(time_period='month')
+# next(trg)
+#
+# ed = EasyDate()
+# ed.move_reference_point(period='week', n_periods=1)
+# ed.move_reference_to_next(next_time='friday')
+# print ed
 
 
